@@ -1,48 +1,60 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
 function CourseManagement() {
-  const [courses, setCourses] = useState([])
-  const [courseName, setCourseName] = useState('')
-  const [instructor, setInstructor] = useState('')
-  const [schedule, setSchedule] = useState('')
-  const [error, setError] = useState('')
+  const [courses, setCourses] = useState([]);
+  const [courseName, setCourseName] = useState('');
+  const [instructor, setInstructor] = useState('');
+  const [schedule, setSchedule] = useState('');
+  const [error, setError] = useState('');
+  const [editingCourseId, setEditingCourseId] = useState(null);
 
-  // Handle adding a new course
+  // Handle adding or updating a course
   const handleAddCourse = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!courseName || !instructor || !schedule) {
-      setError('All fields are required')
-      return
+      setError('All fields are required');
+      return;
     }
 
-    setCourses([
-      ...courses,
-      { id: Date.now(), courseName, instructor, schedule },
-    ])
+    if (editingCourseId) {
+      // Update the course
+      setCourses(courses.map(course =>
+        course.id === editingCourseId
+          ? { ...course, courseName, instructor, schedule }
+          : course
+      ));
+      setEditingCourseId(null); // Reset editing mode
+    } else {
+      // Add new course
+      setCourses([
+        ...courses,
+        { id: Date.now(), courseName, instructor, schedule },
+      ]);
+    }
 
     // Reset form fields
-    setCourseName('')
-    setInstructor('')
-    setSchedule('')
-    setError('')
-  }
+    setCourseName('');
+    setInstructor('');
+    setSchedule('');
+    setError('');
+  };
 
   // Handle deleting a course
   const handleDeleteCourse = (id) => {
-    setCourses(courses.filter(course => course.id !== id))
-  }
+    setCourses(courses.filter(course => course.id !== id));
+  };
 
-  // Handle editing a course (this could be enhanced for full editing functionality)
+  // Handle editing a course
   const handleEditCourse = (id) => {
-    const courseToEdit = courses.find(course => course.id === id)
-    setCourseName(courseToEdit.courseName)
-    setInstructor(courseToEdit.instructor)
-    setSchedule(courseToEdit.schedule)
+    const courseToEdit = courses.find(course => course.id === id);
+    setCourseName(courseToEdit.courseName);
+    setInstructor(courseToEdit.instructor);
+    setSchedule(courseToEdit.schedule);
 
-    // After editing, remove the course and add the updated course
-    handleDeleteCourse(id)
-  }
+    // Set the course id for later updating
+    setEditingCourseId(id);
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -87,7 +99,7 @@ function CourseManagement() {
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
         <button type="submit" className="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-          Add Course
+          {editingCourseId ? 'Update Course' : 'Add Course'}
         </button>
       </form>
 
@@ -122,7 +134,7 @@ function CourseManagement() {
         </ul>
       </div>
     </div>
-  )
+  );
 }
 
-export default CourseManagement
+export default CourseManagement;

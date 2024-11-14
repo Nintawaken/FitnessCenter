@@ -11,7 +11,7 @@ function App() {
   const handleLogin = (e) => {
     e.preventDefault()
     // Simple hardcoded check for demonstration
-    if (username === 'admin' && password === 'password123') {
+    if (username === 'admin' && password === 'admin') {
       setIsLoggedIn(true)
       setError('')
     } else {
