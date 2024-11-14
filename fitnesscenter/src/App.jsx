@@ -1,28 +1,65 @@
-import { useState } from 'react'
-import CourseManagement from './CourseManagement'
+import { useState } from 'react';
+import CourseEnroll from './CourseEnroll';
+import CourseManagement from './CourseManagement';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState(''); // 'admin' or 'user'
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   // Handle login
   const handleLogin = (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
     // Simple hardcoded check for demonstration
     if (username === 'admin' && password === 'admin') {
-      setIsLoggedIn(true)
-      setError('')
+      setRole('admin');
+      setIsLoggedIn(true);
+      setError('');
+    } else if (username === 'user' && password === 'user') {
+      setRole('user');
+      setIsLoggedIn(true);
+      setError('');
     } else {
-      setError('Invalid username or password')
+      setError('Invalid username or password');
     }
-  }
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setRole('');
+    setUsername('');
+    setPassword('');
+    setError('');
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {isLoggedIn ? (
-        <CourseManagement />
+        role === 'admin' ? (
+          <div>
+            <CourseManagement />
+            <button
+              onClick={handleLogout}
+              className="mt-6 p-3 bg-red-500 text-white rounded-md hover:bg-red-600"
+            >
+              Log Out
+            </button>
+          </div>
+        ) : (
+          <div>
+            <CourseEnroll />
+            <button
+              onClick={handleLogout}
+              className="mt-6 p-3 bg-red-500 text-white rounded-md hover:bg-red-600"
+            >
+              Log Out
+            </button>
+          </div>
+        )
       ) : (
         <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold mb-6">Login</h2>
@@ -60,7 +97,7 @@ function App() {
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

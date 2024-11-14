@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function CourseManagement() {
   const [courses, setCourses] = useState([]);
@@ -7,6 +7,17 @@ function CourseManagement() {
   const [schedule, setSchedule] = useState('');
   const [error, setError] = useState('');
   const [editingCourseId, setEditingCourseId] = useState(null);
+
+  // Load courses from localStorage when component mounts
+  useEffect(() => {
+    const storedCourses = JSON.parse(localStorage.getItem('courses')) || [];
+    setCourses(storedCourses);
+  }, []);
+
+  // Save courses to localStorage whenever courses change
+  useEffect(() => {
+    localStorage.setItem('courses', JSON.stringify(courses));
+  }, [courses]);
 
   // Handle adding or updating a course
   const handleAddCourse = (e) => {
