@@ -16,7 +16,6 @@ function App() {
   const userData = {
     admin: { password: 'admin', role: 'admin', isPaid: false },
     user: { password: 'user', role: 'user', isPaid: false },
-    paid: { password: 'paid', role: 'user', isPaid: true },
   };
 
   // Initialize localStorage with predefined users
@@ -117,12 +116,10 @@ function App() {
             {/* Conditional Render for Admin, Paid User, or Regular User */}
             <Routes>
               <Route path="/course-enroll" element={<CourseEnroll username={username} />} />
-              {role === 'paid' && (
-                <Route path="/court-reservation" element={<CourtReservation userRole={role} />} />
-              )}
-              {(role === 'admin' || role === 'user') && (
-                <Route path="/court-reservation" element={<CourtReservation userRole={role} />} />
-              )}
+              <Route
+                path="/court-reservation"
+                element={<CourtReservation username={username} />}
+              />
               {role === 'admin' && <Route path="/course-management" element={<CourseManagement />} />}
               <Route path="/subscription" element={<Subscription username={username} />} />
             </Routes>
