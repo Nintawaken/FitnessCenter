@@ -58,9 +58,9 @@ function CourtReservation({ username }) {
         </div>
       )}
 
-      <div className="mt-4">
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {courts.map((court) => (
-          <div key={court.id} className="flex justify-between items-center mb-2">
+          <div key={court.id} className="flex justify-between items-center mb-2 p-4 bg-gray-100 rounded-lg">
             <span>{court.name}</span>
             <div className="space-x-2">
               {court.isAvailable ? (

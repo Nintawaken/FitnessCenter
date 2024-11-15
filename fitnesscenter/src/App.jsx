@@ -29,7 +29,6 @@ function App() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // If the username and password match predefined credentials, log the user in
     const user = userData[username];
     if (user && user.password === password) {
       setIsLoggedIn(true);
@@ -53,16 +52,10 @@ function App() {
   const resetUsers = () => {
     try {
       const users = JSON.parse(localStorage.getItem('users')) || {};
-      
-      // Reset isPaid to false for all users
       Object.keys(users).forEach(userKey => {
         users[userKey].isPaid = false;
       });
-      
-      // Save the updated users data to localStorage
       localStorage.setItem('users', JSON.stringify(users));
-
-      // Optionally, you could also update state here if needed
       alert('All users have been reset. Their subscription status is now "Not Subscribed".');
     } catch (error) {
       console.error('Error resetting users:', error);
@@ -78,7 +71,7 @@ function App() {
             {/* Dashboard and Navigation */}
             <div className="bg-white p-4 rounded-lg shadow-md mb-6">
               <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
-              <div className="space-x-4">
+              <div className="space-x-4 flex flex-wrap justify-start">
                 <Link
                   to="/course-enroll"
                   className={`p-3 ${role === 'paid' ? 'bg-blue-500' : 'bg-gray-500'} text-white rounded-md hover:bg-blue-600`}
@@ -113,13 +106,11 @@ function App() {
               </div>
             </div>
 
-            {/* Conditional Render for Admin, Paid User, or Regular User */}
             <Routes>
               <Route path="/course-enroll" element={<CourseEnroll username={username} />} />
-              <Route
-                path="/court-reservation"
-                element={<CourtReservation username={username} />}
-              />
+              {(role === 'paid' || role === 'user') && (
+                <Route path="/court-reservation" element={<CourtReservation username={username} />} />
+              )}
               {role === 'admin' && <Route path="/course-management" element={<CourseManagement />} />}
               <Route path="/subscription" element={<Subscription username={username} />} />
             </Routes>
@@ -131,7 +122,6 @@ function App() {
               Log Out
             </button>
 
-            {/* Reset Users Button for Admin */}
             {role === 'admin' && (
               <button
                 onClick={resetUsers}
