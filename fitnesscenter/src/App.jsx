@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import CourseEnroll from './CourseEnroll';
 import CourtReservation from './CourtReservation';
 import CourseManagement from './CourseManagement';
+import Subscription from './Subscription';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -11,22 +12,29 @@ function App() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  // Predefined user data (simulating a database)
+  const userData = {
+    admin: { password: 'admin', role: 'admin', isPaid: false },
+    user: { password: 'user', role: 'user', isPaid: false },
+    paid: { password: 'paid', role: 'user', isPaid: true },
+  };
+
+  // Initialize localStorage with predefined users
+  useEffect(() => {
+    if (!localStorage.getItem('users')) {
+      localStorage.setItem('users', JSON.stringify(userData));
+    }
+  }, []);
+
   // Handle login
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // Simple hardcoded check for demonstration
-    if (username === 'admin' && password === 'admin') {
-      setRole('admin');
+    // If the username and password match predefined credentials, log the user in
+    const user = userData[username];
+    if (user && user.password === password) {
       setIsLoggedIn(true);
-      setError('');
-    } else if (username === 'user' && password === 'user') {
-      setRole('user');
-      setIsLoggedIn(true);
-      setError('');
-    } else if (username === 'paid' && password === 'paid') {
-      setRole('paid');
-      setIsLoggedIn(true);
+      setRole(user.isPaid ? 'paid' : user.role);
       setError('');
     } else {
       setError('Invalid username or password');
@@ -40,6 +48,27 @@ function App() {
     setUsername('');
     setPassword('');
     setError('');
+  };
+
+  // Reset all users' isPaid status to false
+  const resetUsers = () => {
+    try {
+      const users = JSON.parse(localStorage.getItem('users')) || {};
+      
+      // Reset isPaid to false for all users
+      Object.keys(users).forEach(userKey => {
+        users[userKey].isPaid = false;
+      });
+      
+      // Save the updated users data to localStorage
+      localStorage.setItem('users', JSON.stringify(users));
+
+      // Optionally, you could also update state here if needed
+      alert('All users have been reset. Their subscription status is now "Not Subscribed".');
+    } catch (error) {
+      console.error('Error resetting users:', error);
+      alert('Failed to reset users.');
+    }
   };
 
   return (
@@ -58,7 +87,6 @@ function App() {
                   Course Enrollment
                 </Link>
 
-                {/* Only show Court Reservation link for 'paid' users */}
                 {(role === 'paid' || role === 'admin' || role === 'user') && (
                   <Link
                     to="/court-reservation"
@@ -67,6 +95,13 @@ function App() {
                     Court Reservation
                   </Link>
                 )}
+
+                <Link
+                  to="/subscription"
+                  className="p-3 bg-purple-500 text-white rounded-md hover:bg-purple-600"
+                >
+                  Subscription
+                </Link>
 
                 {role === 'admin' && (
                   <Link
@@ -81,7 +116,7 @@ function App() {
 
             {/* Conditional Render for Admin, Paid User, or Regular User */}
             <Routes>
-              <Route path="/course-enroll" element={<CourseEnroll customerType={role} />} />
+              <Route path="/course-enroll" element={<CourseEnroll username={username} />} />
               {role === 'paid' && (
                 <Route path="/court-reservation" element={<CourtReservation userRole={role} />} />
               )}
@@ -89,6 +124,7 @@ function App() {
                 <Route path="/court-reservation" element={<CourtReservation userRole={role} />} />
               )}
               {role === 'admin' && <Route path="/course-management" element={<CourseManagement />} />}
+              <Route path="/subscription" element={<Subscription username={username} />} />
             </Routes>
 
             <button
@@ -97,6 +133,16 @@ function App() {
             >
               Log Out
             </button>
+
+            {/* Reset Users Button for Admin */}
+            {role === 'admin' && (
+              <button
+                onClick={resetUsers}
+                className="mt-4 p-3 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+              >
+                Reset All Users to Not Subscribed
+              </button>
+            )}
           </div>
         ) : (
           <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
