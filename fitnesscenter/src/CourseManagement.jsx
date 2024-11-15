@@ -38,10 +38,7 @@ function CourseManagement() {
       setEditingCourseId(null); // Reset editing mode
     } else {
       // Add new course
-      setCourses([
-        ...courses,
-        { id: Date.now(), courseName, instructor, schedule },
-      ]);
+      setCourses([ ...courses, { id: Date.now(), courseName, instructor, schedule } ]);
     }
 
     // Reset form fields

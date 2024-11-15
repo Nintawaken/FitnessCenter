@@ -1,0 +1,19 @@
+
+{
+    "users": [
+      { "username": "fahbutadmin", "password": "admin", "role": "admin" },
+      { "username": "fahbutuser", "password": "user", "role": "user" }
+    ],
+    "courts": [
+      { "id": 1, "name": "Court 1", "isAvailable": true },
+      { "id": 2, "name": "Court 2", "isAvailable": false },
+      { "id": 3, "name": "Court 3", "isAvailable": true },
+      { "id": 4, "name": "Court 4", "isAvailable": true }
+    ],
+    "courses": [
+      { "id": 1, "name": "Yoga", "isAvailable": true },
+      { "id": 2, "name": "Pilates", "isAvailable": true },
+      { "id": 3, "name": "Zumba", "isAvailable": false }
+    ]
+  }
+  
